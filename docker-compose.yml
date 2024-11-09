@@ -1,11 +1,9 @@
-version: '3.8'
-
 services:
   db:
     image: cassandra:5.0
     container_name: cassandra_db
     environment:
-      CASSANDRA_CLUSTER_NAME: "news_db"
+      CASSANDRA_CLUSTER_NAME: "news"
       CASSANDRA_DC: "My_DC1"
       CASSANDRA_RACK: "My_Rack1"
       CASSANDRA_SEEDS: "cassandra_db"
