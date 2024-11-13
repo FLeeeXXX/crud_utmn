@@ -1,7 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException
-from app.news.schema import SNews
-from app.news.service import NewsService
 import uuid
+from fastapi import APIRouter
+from app.news.schema import SNewsView, SNews
+from app.news.utils import (get_news as secure_get_news, create_news as secure_create_news,
+                            update_news as secure_update_news, delete_news as secure_delete_news)
+
 
 router = APIRouter(
     prefix="/news",
@@ -10,36 +12,20 @@ router = APIRouter(
 
 
 @router.get('/get')
-async def get_news(news_id: uuid.UUID | None = None):
-    try:
-        if news_id:
-            news_id = uuid.UUID(str(news_id).strip())
-            news_list = await NewsService.find_by_id(news_id)
-        else:
-            news_list = await NewsService.find_all()
-        return news_list
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+async def get_news(news_id: uuid.UUID | None = None) -> SNewsView | list[SNewsView]:
+    return await secure_get_news(news_id)
 
 
 @router.post('/create')
-async def create_news(news: SNews) -> str:
-    try:
-        await NewsService.add(
-            title=news.title,
-            subtitle=news.subtitle,
-            body=news.body
-        )
-        return "ok"
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+async def create_news(news: SNewsView) -> None:
+    return await secure_create_news(news)
 
 
 @router.put('/update')
-async def update_news(id: int):
-    pass
+async def update_news(news: SNews) -> None:
+    return await secure_update_news(news)
 
 
 @router.delete('/delete')
-async def delete_news(id: int):
-    pass
+async def delete_news(news_id: uuid.UUID) -> None:
+    await secure_delete_news(news_id)

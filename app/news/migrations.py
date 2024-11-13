@@ -24,7 +24,7 @@ def run_migrations():
             sync_table(News)
             break
         except Exception as e:
-            print(f"Не удалось подключиться к Cassandra, повторная попытка через 5 секунд. Ошибка: {e}")
+            print(f"Не удалось подключиться к Cassandra, повторная попытка через 5 секунд.\nОшибка: {e}")
             time.sleep(5)
 
 

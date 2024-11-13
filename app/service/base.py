@@ -32,3 +32,8 @@ class BaseService:
         set_clause = ", ".join([f"{key} = %s" for key in data.keys()])
         query = f"UPDATE {cls.__keyspace__}.{cls.__table_name__} SET {set_clause} WHERE id = %s"
         await db.execute_async(SimpleStatement(query), tuple(data.values()) + (model_id,))
+
+    @classmethod
+    async def delete_by_id(cls, model_id):
+        query = f"DELETE FROM {cls.__keyspace__}.{cls.__table_name__} WHERE id = %s"
+        await db.execute_async(SimpleStatement(query), (model_id,))
