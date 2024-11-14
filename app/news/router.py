@@ -12,7 +12,7 @@ router = APIRouter(
 
 
 @router.get('/get')
-async def get_news(news_id: uuid.UUID | None = None) -> SNewsView | list[SNewsView]:
+async def get_news(news_id: uuid.UUID | None = None) -> SNews | list[SNews]:
     return await secure_get_news(news_id)
 
 
