@@ -20,12 +20,17 @@ class BaseService:
         return result.all()
 
     @classmethod
-    async def add(cls, **data) -> None:
-        data['id'] = uuid.uuid4()
+    async def add(cls, **data) -> object:
+        new_id = uuid.uuid4()
+        data['id'] = new_id
+
         columns = ", ".join(data.keys())
         placeholders = ", ".join(["%s"] * len(data))
         query = f"INSERT INTO {cls.__keyspace__}.{cls.__table_name__} ({columns}) VALUES ({placeholders})"
+
         await db.execute_async(SimpleStatement(query), tuple(data.values()))
+
+        return await cls.find_by_id(new_id)
 
     @classmethod
     async def change_by_id(cls, model_id, **data):

@@ -16,7 +16,7 @@ async def get_news(news_id: uuid.UUID | None = None):
 
 @secure_request
 async def create_news(news: SNewsView):
-    await NewsService.add(
+    return await NewsService.add(
         title=news.title,
         subtitle=news.subtitle,
         body=news.body

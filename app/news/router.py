@@ -17,7 +17,7 @@ async def get_news(news_id: uuid.UUID | None = None) -> SNews | list[SNews]:
 
 
 @router.post('/create')
-async def create_news(news: SNewsView) -> None:
+async def create_news(news: SNewsView) -> SNews:
     return await secure_create_news(news)
 
 
