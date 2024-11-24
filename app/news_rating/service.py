@@ -16,16 +16,13 @@ class NewsRatingService(BaseService):
     async def add_rating(cls, news_id: uuid.UUID, rating: float):
         id = uuid.uuid4()
 
-        # Вставка рейтинга в таблицу NewsRating
         insert_query = f"INSERT INTO {cls.__keyspace__}.{cls.__table_name__} (id, news_id, rating) VALUES (%s, %s, %s)"
         await db.execute_async(SimpleStatement(insert_query), (id, news_id, rating))
 
-        # Получение среднего рейтинга с ALLOW FILTERING
         avg_query = f"SELECT AVG(rating) AS avg_rating FROM {cls.__keyspace__}.{cls.__table_name__} WHERE news_id = %s ALLOW FILTERING"
         result = await db.execute_async(SimpleStatement(avg_query), (news_id,))
 
         avg_rating = result.one().avg_rating
 
-        # Обновление рейтинга в таблице News
         update_query = f"UPDATE {cls.__news_keyspace__}.{cls.__news_table_name__} SET rating = %s WHERE id = %s"
         await db.execute_async(SimpleStatement(update_query), (avg_rating, news_id))
