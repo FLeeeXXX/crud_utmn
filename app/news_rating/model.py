@@ -10,4 +10,4 @@ class NewsRating(Model):
 
     id = columns.UUID(primary_key=True, default=uuid.uuid4)
     news_id = columns.UUID(required=True)
-    rating = columns.Integer(required=True)
+    rating = columns.Double(required=True)

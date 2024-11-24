@@ -19,7 +19,8 @@ async def create_news(news: SNewsView):
     return await NewsService.add(
         title=news.title,
         subtitle=news.subtitle,
-        body=news.body
+        body=news.body,
+        type=news.type
     )
 
 

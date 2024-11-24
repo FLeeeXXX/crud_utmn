@@ -1,21 +1,31 @@
 from app.database import db
+from app.service.base import BaseService
 from app.news_rating.model import NewsRating
+from app.news.model import News
 from cassandra.query import SimpleStatement
 import uuid
 
 
-class NewsRatingService:
-    @staticmethod
-    async def add_rating(news_id: uuid.UUID, rating: int):
-        # Добавляем новую оценку
-        new_rating = NewsRating(news_id=news_id, rating=rating)
-        new_rating.save()
+class NewsRatingService(BaseService):
+    __keyspace__ = NewsRating.__keyspace__
+    __table_name__ = NewsRating.__table_name__
+    __news_keyspace__ = News.__keyspace__
+    __news_table_name__ = News.__table_name__
 
-        # Пересчитываем средний рейтинг
-        query = "SELECT AVG(rating) AS avg_rating FROM news.news_ratings WHERE news_id = %s"
-        result = await db.execute_async(SimpleStatement(query), (news_id,))
+    @classmethod
+    async def add_rating(cls, news_id: uuid.UUID, rating: float):
+        id = uuid.uuid4()
+
+        # Вставка рейтинга в таблицу NewsRating
+        insert_query = f"INSERT INTO {cls.__keyspace__}.{cls.__table_name__} (id, news_id, rating) VALUES (%s, %s, %s)"
+        await db.execute_async(SimpleStatement(insert_query), (id, news_id, rating))
+
+        # Получение среднего рейтинга с ALLOW FILTERING
+        avg_query = f"SELECT AVG(rating) AS avg_rating FROM {cls.__keyspace__}.{cls.__table_name__} WHERE news_id = %s ALLOW FILTERING"
+        result = await db.execute_async(SimpleStatement(avg_query), (news_id,))
+
         avg_rating = result.one().avg_rating
 
-        # Обновляем поле `rating` в таблице `News`
-        update_query = "UPDATE news.news SET rating = %s WHERE id = %s"
+        # Обновление рейтинга в таблице News
+        update_query = f"UPDATE {cls.__news_keyspace__}.{cls.__news_table_name__} SET rating = %s WHERE id = %s"
         await db.execute_async(SimpleStatement(update_query), (avg_rating, news_id))

@@ -11,5 +11,5 @@ class News(Model):
     title = columns.Text(required=True)
     subtitle = columns.Text(required=True)
     body = columns.Text(required=True)
-    news_type = columns.UUID(required=True)
-    rating = columns.Float(default=0.0)
+    type = columns.UUID(required=True)
+    rating = columns.Double(default=0.0, required=False)

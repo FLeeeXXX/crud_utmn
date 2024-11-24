@@ -7,7 +7,7 @@ class SNews(BaseModel):
     title: str
     subtitle: str
     body: str
-    type: int
+    type: uuid.UUID
     rating: float | None
 
     class Config:
@@ -18,7 +18,7 @@ class SNewsView(BaseModel):
     title: str
     subtitle: str
     body: str
-    type: int
+    type: uuid.UUID
 
     class Config:
         orm_mode: True

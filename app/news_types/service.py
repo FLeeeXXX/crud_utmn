@@ -15,12 +15,3 @@ class NewsTypes(BaseService):
         result = await db.execute_async(SimpleStatement(query))
 
         return [SNewsTypes(**row._asdict()) for row in result.all()]
-
-
-    # @classmethod
-    # async def find_by_id(cls, model_id) -> object:
-    #     query = f"SELECT * FROM {cls.__keyspace__}.{cls.__table_name__} WHERE id = %s"
-    #     result = await db.execute_async(SimpleStatement(query), (model_id,))
-    #     if row := result.one():
-    #         return SNews(**row._asdict())
-    #     return None

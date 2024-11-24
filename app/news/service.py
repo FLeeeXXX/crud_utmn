@@ -20,7 +20,9 @@ class NewsService(BaseService):
                 id=row.id,
                 title=row.title,
                 subtitle=row.subtitle,
-                body=row.body
+                body=row.body,
+                type=row.type,
+                rating=row.rating
             )
             news_list.append(news)
 
