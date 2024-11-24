@@ -2,9 +2,11 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.news.router import router as news_router
+from app.news_types.router import router as news_types_router
 
 app = FastAPI()
 app.include_router(news_router)
+app.include_router(news_types_router)
 
 app.add_middleware(
     CORSMiddleware,

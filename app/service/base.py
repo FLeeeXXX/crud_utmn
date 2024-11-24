@@ -33,12 +33,12 @@ class BaseService:
         return await cls.find_by_id(new_id)
 
     @classmethod
-    async def change_by_id(cls, model_id, **data):
+    async def change_by_id(cls, model_id, **data) -> None:
         set_clause = ", ".join([f"{key} = %s" for key in data.keys()])
         query = f"UPDATE {cls.__keyspace__}.{cls.__table_name__} SET {set_clause} WHERE id = %s"
         await db.execute_async(SimpleStatement(query), tuple(data.values()) + (model_id,))
 
     @classmethod
-    async def delete_by_id(cls, model_id):
+    async def delete_by_id(cls, model_id) -> None:
         query = f"DELETE FROM {cls.__keyspace__}.{cls.__table_name__} WHERE id = %s"
         await db.execute_async(SimpleStatement(query), (model_id,))
