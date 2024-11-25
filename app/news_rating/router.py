@@ -3,6 +3,7 @@ import uuid
 from app.news.schema import SNews
 from app.news_rating.service import NewsRatingService
 from app.news.utils import get_news
+from app.news_rating.schema import SRating
 
 
 router = APIRouter(
@@ -12,10 +13,10 @@ router = APIRouter(
 
 
 @router.post('/add')
-async def get_types(news_id: uuid.UUID, rating: float) -> SNews:
+async def add_rating(news_rating: SRating) -> SNews:
     await NewsRatingService.add_rating(
-        news_id=news_id,
-        rating=rating
+        news_id=news_rating.id,
+        rating=news_rating.rating
     )
 
-    return await get_news(news_id)
+    return await get_news(news_rating.id)
